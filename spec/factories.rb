@@ -3,12 +3,13 @@ FactoryGirl.define do
     name "friendly non profit"
     description "we are really really friendly"
   end
-  factory :charity_worker do
+  factory :user do
     email "jj@example.com"
     password "pppppppp"
+    confirmed_at "2007-01-01 10:00:00"
     admin false
 
-    factory :charity_worker_stubbed_organization do
+    factory :user_stubbed_organization do
       after(:build) do |user|
         Gmaps4rails.stub(:geocode)
         org = FactoryGirl.build(:organization)

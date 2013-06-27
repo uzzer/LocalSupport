@@ -1,6 +1,16 @@
 require 'webmock/cucumber'
 require 'uri-handler'
 
+Given /^I delete "(.*?)" charity$/ do |name|
+  org = Organization.find_by_name name
+  page.driver.submit :delete, "/organizations/#{org.id}", {}
+end
+
+Then /^I should not see an edit button for "(.*?)" charity$/ do |name|
+  org = Organization.find_by_name name
+  expect(page).not_to have_link :href => edit_organization_path(org.id)
+end
+
 Then /^show me the page$/ do
   save_and_open_page
 end
@@ -24,13 +34,37 @@ Given /^I fill in the new charity page validly$/ do
   fill_in 'organization_name', :with => 'Friendly charity'
 end
 
-Given /^I update "(.*?)" charity address to be "(.*?)"$/ do |name, address|
+Given /^I update "(.*?)" charity address to be "(.*?)"( when Google is indisposed)?$/ do |name, address, indisposed|
   steps %Q{
-    Given I am on the edit charity page for "#{name}"
+    Given I am on the charity page for "#{name}"
+    And I follow "Edit"
+    And I edit the charity address to be "#{address}" #{indisposed ? 'when Google is indisposed':''}
+    And I press "Update Organization"
+  }
+end
+
+Given /^I have created a new organization$/ do
+  steps %Q{
+    Given I am on the home page
+    And I follow "New Organization"
+    And I fill in the new charity page validly
+    And I press "Create Organization"
+   }
+end
+
+Given /^I furtively update "(.*?)" charity address to be "(.*?)"$/ do |name, address|
+  steps %Q{
+    Given I am furtively on the edit charity page for "#{name}"
     And I edit the charity address to be "#{address}"
     And I press "Update Organization"
   }
 end
+
+When /^I edit the charity address to be "(.*?)"$/ do |address|
+  stub_request_with_address(address)
+  fill_in('organization_address',:with => address)
+end
+
 
 And /^"(.*?)" charity address is "(.*?)"$/ do |name, address|
   org = Organization.find_by_name(name)
@@ -40,7 +74,6 @@ end
 Then /^I should see "(.*?)" before "(.*?)"$/ do |name1,name2|
   str = page.body
   assert str.index(name1) < str.index(name2)
-
 end
 
 Then /^I should see the donation_info URL for "(.*?)"$/ do |name1|
@@ -56,6 +89,10 @@ end
 
 Then /^the donation_info URL for "(.*?)" should refer to "(.*?)"$/ do |name, href|
   expect(page).to have_link "Donate to #{name} now!", :href => href
+end
+
+And /^the search box should contain "(.*?)"$/ do |arg1|
+  expect(page).to have_xpath("//input[@id='q' and @value='#{arg1}']")
 end
 
 Then /^I should not see any address or telephone information for "([^"]*?)" and "([^"]*?)"$/ do |name1, name2|
@@ -93,8 +130,26 @@ Then /^I should not see any edit link for "([^"]*?)"$/ do |name1|
   page.should_not have_link "Edit"
 end
 
+Then /^I should see a link with text "([^"]*?)"$/ do |link|
+  page.should have_link link
+end
+
+Then /^I should not see a link with text "([^"]*?)"$/ do |link|
+  page.should_not have_link link
+end
+
 Then /^I should not see "(.*?)"$/ do |text|
   page.should_not have_content text
+end
+
+Then /^I should( not)? see a new organizations link/ do  |negate|
+  #page.should_not have_link "New Organization", :href => new_organization_path
+  #page.should_not have_selector('a').with_attribute href: new_organization_path
+  if negate
+    page.should_not have_xpath("//a[@href='#{new_organization_path}']")
+  else
+    page.should have_xpath("//a[@href='#{new_organization_path}']")
+  end
 end
 
 Then /^I should see "((?:(?!before|").)+)"$/ do |text|
@@ -141,11 +196,11 @@ def check_contact_details(name)
 end
 
 Then /^I should be on the sign up page$/ do
-  current_path.should == new_charity_worker_registration_path
+  current_path.should == new_user_registration_path
 end
 
 Then /^I should be on the charity workers page$/ do
-  current_path.should == charity_workers_path
+  current_path.should == users_path
 end
 
 When /^I fill in "(.*?)" with "(.*?)"$/ do |field, value|
