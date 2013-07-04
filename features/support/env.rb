@@ -7,7 +7,7 @@
 require 'cucumber/rails'
 require "rack_session_access/capybara"
 require 'ruby-debug'
-require 'selenium/webdriver'
+require 'watir-webdriver'
 require 'headless'
 
 # Capybara defaults to XPath selectors rather than Webrat's default of CSS3. In

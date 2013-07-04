@@ -35,8 +35,9 @@ group :test do
   gem 'factory_girl_rails', :require => false
   gem 'webmock'
   gem 'uri-handler'
-  gem 'selenium'
-  gem 'selenium-client'
+  #gem 'selenium'
+  #gem 'selenium-client'
+  gem 'watir-webdriver'
   gem 'headless'
 end
 
