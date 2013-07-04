@@ -21,6 +21,7 @@ Scenario: Scrolling down gives more scenarios
   Then I should see a list of 10 organizations on the index page
   When I scroll down the organizations list
   Then I should see a list of 11 organizations on the index page
+  And show me the page
 
 @javascript
 Scenario: Searching gives results in a paginated form
