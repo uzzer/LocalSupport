@@ -16,8 +16,6 @@ require 'headless'
 # steps to use the XPath syntax.
 Capybara.default_selector = :css
 
-#Capybara.javascript_driver = :selenium
-
 WebMock.allow_net_connect!
 
 headless = Headless.new
