@@ -20,4 +20,13 @@ Given(/^I import emails from "(.*?)"$/) do |file|
   Rake::Task.define_task(:environment)
   @rake['db:import:emails'].invoke(file)
 end
+Given(/^I invite pre-approved emails from "(.*?)"$/) do |file|
+  require "rake"
+  @rake = Rake::Application.new
+  Rake.application = @rake
+  Rake.application.rake_require "tasks/emails"
+  Rake::Task.define_task(:environment)
+  @rake['db:emails:invite'].invoke(file)
+end
+
 

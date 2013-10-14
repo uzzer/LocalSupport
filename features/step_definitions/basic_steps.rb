@@ -257,8 +257,8 @@ Then /^I debug$/ do
   0
 end
 
-And(/^a file exists:$/) do |table|
-  CSV.open("db/email_test.csv", "wb") do |csv|
+And(/^a file called "(.*?)" exists:$/) do |name, table|
+  CSV.open("db/#{name}", "wb") do |csv|
     csv << table.hashes[0].keys
     table.hashes.each do |org|
       csv << org.values

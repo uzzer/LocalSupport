@@ -11,5 +11,10 @@ begin
         Organization.import_emails(args[:file],1000)
       end
     end
+    namespace :emails do
+      task :invite, [:file] => :environment do |t, args|
+
+      end
+    end
   end
 end
