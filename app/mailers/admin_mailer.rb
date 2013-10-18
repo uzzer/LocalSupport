@@ -7,7 +7,6 @@
 class AdminMailer < Devise::Mailer
 
   def new_user_waiting_for_approval(org)
-    debugger
     @org_name = org.name
     @admins=User.find_all_by_admin(true)
     @admins.each do |admin|
