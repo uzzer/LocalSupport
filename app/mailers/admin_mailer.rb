@@ -11,7 +11,7 @@ class AdminMailer < Devise::Mailer
     @admins=User.find_all_by_admin(true)
     @admins.each do |admin|
       mail(to: admin.email)
-      mail(from: config.mailer_sender)
+      mail(from: "support@harrowcn.org.uk")
       mail.deliver
     end
   end
