@@ -298,8 +298,25 @@ Then(/^I should see a list of users with pending privileges$/) do
 end
 
 Then(/^I should (not )?see a link to approve "(.*?)"$/) do |negate, email|
-  expectation_method = negate ? :has_no_text? : :has_text?
+  expectation_method = negate ? :not_to : :to
   id=User.find_by_email(email).id
-  expect(page.find("##{id}.userrow").send(expectation_method, "Approve"))
+  expect(page.find("##{id}.userrow").text).send(expectation_method, have_text("Approve"))
   #page.find("##{id}.userrow").should have_text("Approve")
+end
+
+Given /^there are pending users$/ do
+  steps %{
+    Then I should see a list of users with pending privileges
+    And I should see a link to approve "pending@myorg.com"
+  }
+end
+
+When /^I approve a user$/ do
+  click_link "Approve"
+end
+
+Then /^I see the user as a charity admin$/ do
+  steps %{
+    Then I should not see a link to approve "pending@myorg.com"
+  }
 end
