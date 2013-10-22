@@ -61,7 +61,7 @@ describe UsersController do
     end
     context "user has pending values" do
 
-      it "should have charity_admin_pending to true" do
+      it "should have charity_admin_pending to true (sort of sad path)" do
         pending_user = double("User")
         User.should_receive(:find_by_id).with("3").and_return(pending_user)
         pending_user.stub(:charity_admin_pending).and_return(false)
