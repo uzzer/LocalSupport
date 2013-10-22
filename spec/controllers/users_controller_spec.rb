@@ -59,9 +59,8 @@ describe UsersController do
       controller.stub(:current_user).and_return(admin)
       admin.should_receive(:admin?).and_return(true)
     end
-    context "user has pending values" do
-
-      it "should have charity_admin_pending to true (sort of sad path)" do
+    context "pending values" do
+      it "should not be changed if charity_admin_pending is false (sad path)" do
         pending_user = double("User")
         User.should_receive(:find_by_id).with("3").and_return(pending_user)
         pending_user.stub(:charity_admin_pending).and_return(false)
@@ -74,8 +73,13 @@ describe UsersController do
       end
     end
 
+    context "2 admins approving pending_user" do
+      it "should not happen" do
+      end
+    end
+
     context "user is approved" do
-      it "should set charity_admin_pending to false (happy path)" do
+      it "should set charity_admin_pending from true to false (happy path)" do
         pending_user = double("User")
         User.should_receive(:find_by_id).with("3").and_return(pending_user)
         pending_user.stub(:charity_admin_pending).and_return(true)
