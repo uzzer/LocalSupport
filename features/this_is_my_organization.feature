@@ -14,6 +14,8 @@ Feature: This is my organization
     | admin@myorg.com    | adminpass0987  | true  | 2008-01-01 00:00:00 | My Organization | false                 |
     | pending@myorg.com  | password123    | false | 2008-01-01 00:00:00 |                 | true                  |
 
+  # this looks rather procedural rather than declarative
+  # declarative rewrite would emphasize this is about maintaining state despite not being logged in
   Scenario: I am an user who has not signed in and requests to be admin of my organization
     Given I am not signed in as any user
     And I am on the charity page for "My Organization"
@@ -22,13 +24,14 @@ Feature: This is my organization
     Then I should be on the sign in page
     When I sign in as "nonadmin@myorg.com" with password "mypassword1234"
     Then an email should be sent to "admin@myorg.com"
-    And I should see "You have requested admin status for My Organization"
+    And I should see "You have requested admin status for My Organization" # would this be better as a permanent indicator of status rather than flash
     And I should be on the charity page for "My Organization"
     And I should not see the "This is my organization" button for "My Organization"
 
+  # what about when we are already admin of an organization - we should not see the this my organization
     
   Scenario: I am a signed in user who requests to be admin for my organization
-    Given I am on the sign in page
+    Given I am on the sign in page                                          # should be using our quick sign operation
     And I sign in as "nonadmin@myorg.com" with password "mypassword1234"
     When I am on the charity page for "My Organization"
     And I press "This is my organization"
@@ -38,6 +41,8 @@ Feature: This is my organization
     # And flags listed below must be set for user
     # user.charity_admin_pending will be set to TRUE here
     # user.pending_organization_id is set for their charity
+
+  # all the scenarios below should be in a different feature file
     
     # when the admin signs in, they should see the users who want rights
   Scenario: I am an admin checking out list of users who want edit privileges for an organization

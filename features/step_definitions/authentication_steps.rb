@@ -69,6 +69,7 @@ Then /^I should not be signed in as any user$/ do
   }
 end
 
+# this could easily be merged
 Given /^I am not signed in as any user$/ do
   step "I should not be signed in as any user"
 end

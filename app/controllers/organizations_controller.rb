@@ -94,9 +94,9 @@ class OrganizationsController < ApplicationController
   end
 
   def grab
-      session[:organization_id] = params[:id]
-      @organization = Organization.find(session[:organization_id])
-    if current_user.blank?
+    session[:organization_id] = params[:id]
+    @organization = Organization.find(session[:organization_id])
+    if current_user.blank? # could we refactor this to a logged_in? method and I wonder if devise already has that no?
       redirect_to user_session_path
     else
       @organization.send_admin_mail

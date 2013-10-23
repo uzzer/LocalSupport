@@ -38,7 +38,7 @@ Then /^I should( not)? see an edit button for "(.*?)" charity$/ do |negate, name
   org = Organization.find_by_name name
   expect(page).send(expectation_method, have_link('Edit',:href => edit_organization_path(org.id)))
 end
-
+# this could be merged with above
 Then /^I should( not)? see the "(.*?)" button for "(.*?)"/ do |negate, button, charity|
   expectation_method = negate ? :not_to : :to
   org = Organization.find_by_name charity
@@ -293,6 +293,7 @@ Then(/^I should see "(.*?)" < linked > to "(.*?)"$/) do |text, url|
   links = collect_links(page.body)
   links[text].should == url
 end
+# concerned about this not doing anything substantive
 Then(/^I should see a list of users with pending privileges$/) do
   expect(page).to have_content("true")
 end
