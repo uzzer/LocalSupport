@@ -30,4 +30,16 @@ class UsersController < ApplicationController
     end
     redirect_to users_path 
   end
+
+  def reject_charity_admin
+    redirect_to root_url unless current_user.admin?
+    pending_user = User.find_by_id(params[:id])
+    if pending_user.charity_admin_pending
+      pending_user.charity_admin_pending = false
+      pending_user.pending_organization_id = nil
+      pending_user.save!
+    end
+    redirect_to users_path
+  end
+
 end

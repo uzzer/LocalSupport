@@ -52,7 +52,7 @@ describe UsersController do
     end
   end
 
-  describe "#approve_charity_admin" do
+  describe "PUT #approve_charity_admin" do
     before do
       admin = double("Admin")
       request.env['warden'].stub :authenticate! => admin
@@ -64,8 +64,6 @@ describe UsersController do
         pending_user = double("User")
         User.should_receive(:find_by_id).with("3").and_return(pending_user)
         pending_user.stub(:charity_admin_pending).and_return(false)
-        pending_user.stub(:pending_organization_id).and_return(nil)
-        pending_user.stub(:organization_id).and_return(nil)
         pending_user.should_not_receive(:charity_admin_pending=).with(true)
         pending_user.should_not_receive(:pending_organization_id=).with(5)
         pending_user.should_not_receive(:organization_id=).with(nil)
@@ -73,10 +71,11 @@ describe UsersController do
       end
     end
 
-    context "2 admins approving pending_user" do
-      it "should not happen" do
-      end
-    end
+    # context "2 admins approving pending_user" do
+    #   it "should not happen" do
+    #     pending
+    #   end
+    # end
 
     context "user is approved" do
       it "should set charity_admin_pending from true to false (happy path)" do
@@ -84,12 +83,38 @@ describe UsersController do
         User.should_receive(:find_by_id).with("3").and_return(pending_user)
         pending_user.stub(:charity_admin_pending).and_return(true)
         pending_user.stub(:pending_organization_id).and_return(5)
-        pending_user.stub(:organization_id).and_return(nil)
         pending_user.should_receive(:charity_admin_pending=).with(false)
         pending_user.should_receive(:pending_organization_id=).with(nil)
         pending_user.should_receive(:organization_id=).with(5)
         pending_user.should_receive(:save!)
         put :approve_charity_admin, id: "3"
+      end
+    end
+  end
+
+  describe "PUT #reject_charity_admin" do
+    context "user is not approved" do
+      before do
+      admin = double("Admin")
+      request.env['warden'].stub :authenticate! => admin
+      controller.stub(:current_user).and_return(admin)
+      admin.should_receive(:admin?).and_return(true)
+    end
+      it "should reject a pending_user (happy path)" do
+        pending_user = double("User")
+        User.should_receive(:find_by_id).with("4").and_return(pending_user)
+        pending_user.stub(:charity_admin_pending).and_return(true)
+        pending_user.should_receive(:charity_admin_pending=).with(false)
+        pending_user.should_receive(:pending_organization_id=).with(nil)
+        pending_user.should_receive(:save!)
+        put :reject_charity_admin, id: "4"
+      end
+
+      it "should not reject a rejected pending_user" do
+        pending_user = double("User")
+        User.should_receive(:find_by_id).with("4").and_return(pending_user)
+        pending_user.stub(:charity_admin_pending).and_return(false)
+        put :reject_charity_admin, id: "4"
       end
     end
   end

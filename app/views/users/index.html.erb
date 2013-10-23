@@ -18,7 +18,10 @@
         <td><%= user.email %></td>
         <td><%= Organization.find(user.pending_organization_id).name unless user.pending_organization_id.blank? %></td>
         <td><%= user.charity_admin_pending %></td>
-        <td><%= link_to "Approve", "#" unless user.pending_organization_id.blank? %></td>
+        <td><% unless user.pending_organization_id.blank? %>
+          <%= link_to "Approve", approve_admin_path(user.id), :method => :put %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
 
