@@ -110,7 +110,7 @@ describe UsersController do
         put :reject_charity_admin, id: "4"
       end
 
-      it "should not reject a rejected pending_user" do
+      it "should not reject a rejected pending_user (sad path)" do
         pending_user = double("User")
         User.should_receive(:find_by_id).with("4").and_return(pending_user)
         pending_user.stub(:charity_admin_pending).and_return(false)

@@ -10,6 +10,7 @@
       <th>User Email</th>
       <th>Pending Organization</th>
       <th>Admin Pending?</th>
+
     </tr>
   </thead>
   <tbody>
@@ -19,7 +20,8 @@
         <td><%= Organization.find(user.pending_organization_id).name unless user.pending_organization_id.blank? %></td>
         <td><%= user.charity_admin_pending %></td>
         <td><% unless user.pending_organization_id.blank? %>
-          <%= link_to "Approve", approve_admin_path(user.id), :method => :put %>
+          <%= link_to "Approve", approve_admin_path(user.id), :method => :put %> | 
+          <%= link_to "Reject", reject_admin_path(user.id), method: :put %>
           <% end %>
         </td>
       </tr>

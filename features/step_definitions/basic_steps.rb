@@ -311,12 +311,28 @@ Given /^there are pending users$/ do
   }
 end
 
-When /^I approve a user$/ do
-  click_link "Approve"
+When /^I (approve|reject) a user$/ do |action|
+  case action
+  when "approve" then click_link "Approve"
+  when "reject" then click_link "Reject"
+  end
 end
 
-Then /^I see the user as a charity admin$/ do
+Then /^the user is( not)? a charity admin$/ do |negate|
+  user = User.find_by_email("pending@myorg.com")
+  org_id = user.organization_id
+  if negate
+    expect(org_id).to be_nil #org id = nil, pending org = nil, charity pending = false
+  else
+    expect(org_id).to eq 1 #org id = #, pending org = nil, charity pending = false
+  end
   steps %{
     Then I should not see a link to approve "pending@myorg.com"
   }
 end
+
+Then /^I should see all users$/ do
+  page.all('tr').count.should == 4
+end
+
+
