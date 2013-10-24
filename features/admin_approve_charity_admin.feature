@@ -17,23 +17,17 @@ Feature: Admin approve charity admin
 
 
   Scenario: As an admin approving a pending user's request
-    Given I am signed in as an admin
-    And I am on the users page
-    And there are pending users
+    Given I am signed in to approve users
     When I approve a user
     Then the user is a charity admin
 
   Scenario: As an admin rejecting a pending user's request
-    Given I am signed in as an admin
-    And I am on the users page
-    And there are pending users
+    Given I am signed in to approve users
     When I reject a user
     Then the user is not a charity admin
     
   Scenario: I am an admin checking out list of all users
-    Given I am signed in as an admin
-    When I am on the users page
-    And there are pending users
+    Given I am signed in to approve users
     Then I should see all users
 
   Scenario: I am not an admin but I am sneaky and not signed in

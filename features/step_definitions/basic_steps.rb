@@ -335,4 +335,11 @@ Then /^I should see all users$/ do
   page.all('tr').count.should == 4
 end
 
+Given /^I am signed in to approve users$/ do
+  steps %{
+    Given I am signed in as an admin
+    And I am on the users page
+    And there are pending users
+  }
+end
 
