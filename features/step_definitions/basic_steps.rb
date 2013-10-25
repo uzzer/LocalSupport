@@ -299,8 +299,48 @@ Then(/^I should see a list of users with pending privileges$/) do
 end
 
 Then(/^I should (not )?see a link to approve "(.*?)"$/) do |negate, email|
-  expectation_method = negate ? :has_no_text? : :has_text?
+  expectation_method = negate ? :not_to : :to
   id=User.find_by_email(email).id
-  expect(page.find("##{id}.userrow").send(expectation_method, "Approve"))
+  expect(page.find("##{id}.userrow").text).send(expectation_method, have_text("Approve"))
   #page.find("##{id}.userrow").should have_text("Approve")
 end
+
+Given /^there are pending users$/ do
+  steps %{
+    Then I should see a list of users with pending privileges
+    And I should see a link to approve "pending@myorg.com"
+  }
+end
+
+When /^I (approve|reject) a user$/ do |action|
+  case action
+  when "approve" then click_link "Approve"
+  when "reject" then click_link "Reject"
+  end
+end
+
+Then /^the user is( not)? a charity admin$/ do |negate|
+  user = User.find_by_email("pending@myorg.com")
+  org_id = user.organization_id
+  if negate
+    expect(org_id).to be_nil #org id = nil, pending org = nil, charity pending = false
+  else
+    expect(org_id).to eq 1 #org id = #, pending org = nil, charity pending = false
+  end
+  steps %{
+    Then I should not see a link to approve "pending@myorg.com"
+  }
+end
+
+Then /^I should see all users$/ do
+  page.all('tr').count.should == 4
+end
+
+Given /^I am signed in to approve users$/ do
+  steps %{
+    Given I am signed in as an admin
+    And I am on the users page
+    And there are pending users
+  }
+end
+

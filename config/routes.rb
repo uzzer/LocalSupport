@@ -4,6 +4,10 @@ LocalSupport::Application.routes.draw do
   devise_for :users
 
   match '/users' => 'users#index',as: :users, via: [:get]
+  match '/users/:id/approve_admin' => 'users#approve_charity_admin', 
+                                  as: :approve_admin, via: [:put]
+  match '/users/:id/reject_admin' => 'users#reject_charity_admin',
+                                  as: :reject_admin, via: [:put]
   match 'organizations/search' => 'organizations#search'
   #match 'pages/disclaimer' => 'pages#disclaimer'
   #match 'pages/aboutus' => 'pages#aboutus'
