@@ -21,7 +21,7 @@ LocalSupport::Application.routes.draw do
   resources :organizations do
     member do
       post 'grab'
-      #TODO why is devise requiring get request after sign in?
+      # Devise requires a get request after sign in
       get 'grab'
     end
   end

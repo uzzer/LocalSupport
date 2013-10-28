@@ -344,3 +344,19 @@ Given /^I am signed in to approve users$/ do
   }
 end
 
+Given(/^"(.*)"'s request status for "(.*)" should be updated appropriately$/) do |email,org|
+  steps %Q{
+    Then an email should be sent to "admin@myorg.com"
+    And I should see "You have requested admin status for My Organization"
+    And I should be on the charity page for "#{org}"
+    And I should not see the "This is my organization" button for "#{org}"
+    And "#{email}"'s request for "#{org}" should be persisted
+  }
+end
+
+And /"(.*)"'s request for "(.*)" should be persisted/ do |email,org|
+  user = User.find_by_email(email)
+  org = Organization.find_by_name(org)
+  user.pending_organization_id.should eq org.id
+  user.charity_admin_pending.should be_true
+end

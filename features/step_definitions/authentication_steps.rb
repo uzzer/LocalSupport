@@ -136,6 +136,7 @@ end
 Then(/^I should not see a link to approve them$/) do
   page.should_not have_link "Approve"
 end
+
 Given(/^"(.*?)" has requested admin status for "(.*?)"$/) do |email, org_name|
   organization = Organization.find_by_name(org_name)
   user = User.find_by_email(email)
